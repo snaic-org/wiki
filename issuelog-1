@@ -1,0 +1,13 @@
+# Issue with checkpointing when training models
+
+- On 6 Jun, 2025 a model training script finetuning `BAAI/bge-large-en-v1.5` crashed the DGX server. 
+- This is a 1.4 GB model, which was being trained for 100 epochs. 
+- The issue was that the model was being checkpointed every epoch. 
+- It is also suspected that multiple checkpoints were saved during a single epoch (due to techniques like gradient checkpointing).
+- This means, that the script ended up creating atleast 140 GB of model weights. 
+
+## Lessons learned
+
+- To ensure only the best weights are checkpointed, as this is common practice.
+- Try to check code for hidden issues like this (or use AI assistance to ask it to critique code) before scaling experiments.
+- The code used for this training worked fine for a 10 epoch training and no issues surfaced.
